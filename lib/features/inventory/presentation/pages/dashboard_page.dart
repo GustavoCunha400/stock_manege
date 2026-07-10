@@ -17,6 +17,9 @@ import '../../domain/entities/dashboard_report.dart';
 import '../../domain/usecases/build_dashboard_report.dart';
 import '../controllers/product_controller.dart';
 
+const _dashboardChartAnimationDuration = Duration(milliseconds: 900);
+const _dashboardChartAnimationCurve = Curves.easeOutCubic;
+
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
 
@@ -124,7 +127,11 @@ class _DashboardPageState extends State<DashboardPage> {
                   physics: const NeverScrollableScrollPhysics(),
                   crossAxisSpacing: isMobile ? 6 : 12,
                   mainAxisSpacing: isMobile ? 6 : 12,
-                  childAspectRatio: isMobile ? 1.75 : columns == 4 ? 2.4 : 1.7,
+                  childAspectRatio: isMobile
+                      ? 1.75
+                      : columns == 4
+                      ? 2.4
+                      : 1.7,
                   children: [
                     _MetricCard(
                       title: l10n.registeredProducts,
@@ -162,10 +169,10 @@ class _DashboardPageState extends State<DashboardPage> {
               Column(
                 children: [
                   _MetricSummaryCard(
-                      title: l10n.totalEntries,
-                      value: '${report.totalEntries}',
-                      icon: Icons.call_received,
-                      color: _entryColor,
+                    title: l10n.totalEntries,
+                    value: '${report.totalEntries}',
+                    icon: Icons.call_received,
+                    color: _entryColor,
                   ),
                   const SizedBox(height: 6),
                   _MetricSummaryCard(
@@ -302,26 +309,31 @@ class _MetricCard extends StatelessWidget {
         child: LayoutBuilder(
           builder: (context, constraints) {
             final isCompact = constraints.maxWidth < 170;
-            final padding = isCompact ? 8.0 : isMobile ? 10.0 : 16.0;
+            final padding = isCompact
+                ? 8.0
+                : isMobile
+                ? 10.0
+                : 16.0;
             final valueFontSize = (constraints.maxHeight * 0.26).clamp(
               isMobile ? 16.0 : 20.0,
               isMobile ? 24.0 : 30.0,
             );
-            final valueScale = (valueFontSize / (isMobile ? 28.0 : 34.0))
-                .clamp(0.85, 1.15);
-            final iconSize = ((constraints.maxWidth * 0.12) * valueScale)
-                .clamp(
+            final valueScale = (valueFontSize / (isMobile ? 28.0 : 34.0)).clamp(
+              0.85,
+              1.15,
+            );
+            final iconSize = ((constraints.maxWidth * 0.12) * valueScale).clamp(
               isMobile ? 14.0 : 18.0,
               isMobile ? 28.0 : 36.0,
             );
             final titleStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
-                  fontSize: ((constraints.maxWidth * 0.065) * valueScale).clamp(
-                    isMobile ? 10.0 : 11.0,
-                    isMobile ? 14.0 : 16.0,
-                  ),
-                  height: 1.08,
-                  fontWeight: FontWeight.w600,
-                );
+              fontSize: ((constraints.maxWidth * 0.065) * valueScale).clamp(
+                isMobile ? 10.0 : 11.0,
+                isMobile ? 14.0 : 16.0,
+              ),
+              height: 1.08,
+              fontWeight: FontWeight.w600,
+            );
             final valueStyle = Theme.of(context).textTheme.headlineMedium
                 ?.copyWith(
                   fontSize: valueFontSize,
@@ -395,18 +407,21 @@ class _MetricSummaryCard extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, constraints) {
           final isCompact = constraints.maxWidth < 360;
-          final padding = isCompact ? 8.0 : isMobile ? 10.0 : 16.0;
+          final padding = isCompact
+              ? 8.0
+              : isMobile
+              ? 10.0
+              : 16.0;
           final valueFontSize = (constraints.maxWidth * 0.06).clamp(
             isMobile ? 18.0 : 22.0,
             isMobile ? 28.0 : 34.0,
           );
-          final valueScale = (valueFontSize / (isMobile ? 24.0 : 30.0))
-              .clamp(0.85, 1.12);
-          final avatarRadius = ((constraints.maxWidth * 0.045) * valueScale)
-              .clamp(
-            isMobile ? 15.0 : 18.0,
-            isMobile ? 24.0 : 32.0,
+          final valueScale = (valueFontSize / (isMobile ? 24.0 : 30.0)).clamp(
+            0.85,
+            1.12,
           );
+          final avatarRadius = ((constraints.maxWidth * 0.045) * valueScale)
+              .clamp(isMobile ? 15.0 : 18.0, isMobile ? 24.0 : 32.0);
           final valueStyle = Theme.of(context).textTheme.headlineSmall
               ?.copyWith(
                 fontSize: valueFontSize,
@@ -415,12 +430,12 @@ class _MetricSummaryCard extends StatelessWidget {
                 color: color,
               );
           final titleStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
-                fontSize: ((constraints.maxWidth * 0.032) * valueScale).clamp(
-                  isMobile ? 11.0 : 12.0,
-                  isMobile ? 15.0 : 16.0,
-                ),
-                height: 1.08,
-              );
+            fontSize: ((constraints.maxWidth * 0.032) * valueScale).clamp(
+              isMobile ? 11.0 : 12.0,
+              isMobile ? 15.0 : 16.0,
+            ),
+            height: 1.08,
+          );
 
           return Padding(
             padding: EdgeInsets.all(padding),
@@ -507,9 +522,7 @@ class _ChartCard extends StatelessWidget {
 class _ResponsiveCharts extends StatelessWidget {
   final List<Widget> children;
 
-  const _ResponsiveCharts({
-    required this.children,
-  });
+  const _ResponsiveCharts({required this.children});
 
   @override
   Widget build(BuildContext context) {
@@ -560,115 +573,121 @@ class _MovementBarChart extends StatelessWidget {
     );
     final chartMaxY = _roundedMovementChartMaxY(maxValue);
 
-    return BarChart(
-      BarChartData(
-        maxY: chartMaxY,
-        alignment: isMobile
-            ? BarChartAlignment.spaceBetween
-            : BarChartAlignment.spaceAround,
-        barTouchData: BarTouchData(
-          touchTooltipData: BarTouchTooltipData(
-            getTooltipColor: (_) =>
-                Theme.of(context).colorScheme.inverseSurface,
-            getTooltipItem: (group, groupIndex, rod, rodIndex) {
-              final label = rodIndex == 0 ? entryLabel : exitLabel;
-              return BarTooltipItem(
-                '$label\n${rod.toY.toInt()}',
-                TextStyle(
-                  color: Theme.of(context).colorScheme.onInverseSurface,
-                ),
-              );
-            },
-          ),
-        ),
-        titlesData: FlTitlesData(
-          topTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
-          rightTitles: const AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
-          leftTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              reservedSize: isMobile ? 38 : 46,
-              interval: chartMaxY / 4,
-              getTitlesWidget: (value, meta) {
-                if (value < 0 || value > meta.max) {
-                  return const SizedBox.shrink();
-                }
-                return SideTitleWidget(
-                  meta: meta,
-                  space: 8,
-                  child: Text(
-                    _formatMovementAxisValue(value),
-                    maxLines: 1,
-                    softWrap: false,
-                    overflow: TextOverflow.visible,
-                    style: Theme.of(context).textTheme.bodySmall,
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0, end: 1),
+      duration: _dashboardChartAnimationDuration,
+      curve: _dashboardChartAnimationCurve,
+      builder: (context, animationValue, _) => BarChart(
+        BarChartData(
+          maxY: chartMaxY,
+          alignment: isMobile
+              ? BarChartAlignment.spaceBetween
+              : BarChartAlignment.spaceAround,
+          barTouchData: BarTouchData(
+            touchTooltipData: BarTouchTooltipData(
+              getTooltipColor: (_) =>
+                  Theme.of(context).colorScheme.inverseSurface,
+              getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                final label = rodIndex == 0 ? entryLabel : exitLabel;
+                return BarTooltipItem(
+                  '$label\n${rod.toY.toInt()}',
+                  TextStyle(
+                    color: Theme.of(context).colorScheme.onInverseSurface,
                   ),
                 );
               },
             ),
           ),
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              reservedSize: isMobile ? 46 : 32,
-              getTitlesWidget: (value, meta) {
-                final index = value.toInt();
-                if (index < 0 || index >= items.length) {
-                  return const SizedBox.shrink();
-                }
-                final label = isMobile
-                    ? items[index].label.replaceFirst('/', '\n')
-                    : items[index].label;
-                return SideTitleWidget(
-                  meta: meta,
-                  space: isMobile ? 12 : 8,
-                  child: Text(
-                    label,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontSize: isMobile ? 10 : null,
-                      height: isMobile ? 1.05 : null,
+          titlesData: FlTitlesData(
+            topTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            rightTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            leftTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: isMobile ? 38 : 46,
+                interval: chartMaxY / 4,
+                getTitlesWidget: (value, meta) {
+                  if (value < 0 || value > meta.max) {
+                    return const SizedBox.shrink();
+                  }
+                  return SideTitleWidget(
+                    meta: meta,
+                    space: 8,
+                    child: Text(
+                      _formatMovementAxisValue(value),
+                      maxLines: 1,
+                      softWrap: false,
+                      overflow: TextOverflow.visible,
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
+                  );
+                },
+              ),
+            ),
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: isMobile ? 46 : 32,
+                getTitlesWidget: (value, meta) {
+                  final index = value.toInt();
+                  if (index < 0 || index >= items.length) {
+                    return const SizedBox.shrink();
+                  }
+                  final label = isMobile
+                      ? items[index].label.replaceFirst('/', '\n')
+                      : items[index].label;
+                  return SideTitleWidget(
+                    meta: meta,
+                    space: isMobile ? 12 : 8,
+                    child: Text(
+                      label,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontSize: isMobile ? 10 : null,
+                        height: isMobile ? 1.05 : null,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+          borderData: FlBorderData(show: false),
+          gridData: FlGridData(
+            drawVerticalLine: false,
+            horizontalInterval: chartMaxY / 4,
+            getDrawingHorizontalLine: (value) => FlLine(
+              color: Theme.of(context).dividerColor.withValues(alpha: 0.35),
+              strokeWidth: 1,
+            ),
+          ),
+          barGroups: [
+            for (var index = 0; index < items.length; index++)
+              BarChartGroupData(
+                x: index,
+                barsSpace: isMobile ? 4 : 6,
+                barRods: [
+                  BarChartRodData(
+                    toY: items[index].value * animationValue,
+                    color: _DashboardPageState._entryColor,
+                    width: isMobile ? 9 : 12,
+                    borderRadius: BorderRadius.circular(4),
                   ),
-                );
-              },
-            ),
-          ),
+                  BarChartRodData(
+                    toY: items[index].secondaryValue * animationValue,
+                    color: _DashboardPageState._exitColor,
+                    width: isMobile ? 9 : 12,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ],
+              ),
+          ],
         ),
-        borderData: FlBorderData(show: false),
-        gridData: FlGridData(
-          drawVerticalLine: false,
-          horizontalInterval: chartMaxY / 4,
-          getDrawingHorizontalLine: (value) => FlLine(
-            color: Theme.of(context).dividerColor.withValues(alpha: 0.35),
-            strokeWidth: 1,
-          ),
-        ),
-        barGroups: [
-          for (var index = 0; index < items.length; index++)
-            BarChartGroupData(
-              x: index,
-              barsSpace: isMobile ? 4 : 6,
-              barRods: [
-                BarChartRodData(
-                  toY: items[index].value,
-                  color: _DashboardPageState._entryColor,
-                  width: isMobile ? 9 : 12,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                BarChartRodData(
-                  toY: items[index].secondaryValue,
-                  color: _DashboardPageState._exitColor,
-                  width: isMobile ? 9 : 12,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-              ],
-            ),
-        ],
+        duration: Duration.zero,
       ),
     );
   }
@@ -711,73 +730,78 @@ class _HorizontalBarChart extends StatelessWidget {
     final isMobile = context.isMobile;
     final itemGap = isMobile ? 10.0 : 12.0;
     final valueWidth = isMobile ? 70.0 : 104.0;
-    final labelStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
-          height: 1.15,
-          fontWeight: FontWeight.w600,
-        );
+    final labelStyle = Theme.of(
+      context,
+    ).textTheme.bodySmall?.copyWith(height: 1.15, fontWeight: FontWeight.w600);
 
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          for (var index = 0; index < items.length; index++) ...[
-            Builder(
-              builder: (context) {
-                final item = items[index];
-                final progress = totalValue <= 0
-                    ? 0.0
-                    : (item.value / totalValue).clamp(0.0, 1.0);
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0, end: 1),
+      duration: _dashboardChartAnimationDuration,
+      curve: _dashboardChartAnimationCurve,
+      builder: (context, animationValue, _) => SingleChildScrollView(
+        child: Column(
+          children: [
+            for (var index = 0; index < items.length; index++) ...[
+              Builder(
+                builder: (context) {
+                  final item = items[index];
+                  final progress = totalValue <= 0
+                      ? 0.0
+                      : (item.value / totalValue).clamp(0.0, 1.0);
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Tooltip(
-                            message: item.label,
-                            child: Text(
-                              item.label,
-                              maxLines: 2,
-                              overflow: responsiveTextOverflow(context),
-                              style: labelStyle,
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Tooltip(
+                              message: item.label,
+                              child: Text(
+                                item.label,
+                                maxLines: 2,
+                                overflow: responsiveTextOverflow(context),
+                                style: labelStyle,
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(width: itemGap),
-                        SizedBox(
-                          width: valueWidth,
-                          child: FittedBox(
-                            fit: BoxFit.scaleDown,
-                            alignment: Alignment.centerRight,
-                            child: Text(
-                              valueFormatter(item.value),
-                              textAlign: TextAlign.end,
-                              maxLines: 1,
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.w700),
+                          SizedBox(width: itemGap),
+                          SizedBox(
+                            width: valueWidth,
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.centerRight,
+                              child: Text(
+                                valueFormatter(item.value),
+                                textAlign: TextAlign.end,
+                                maxLines: 1,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 6),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(999),
-                      child: LinearProgressIndicator(
-                        minHeight: isMobile ? 9 : 10,
-                        value: progress,
-                        color: color,
-                        backgroundColor: color.withValues(alpha: 0.12),
+                        ],
                       ),
-                    ),
-                  ],
-                );
-              },
-            ),
-            if (index != items.length - 1) SizedBox(height: itemGap),
+                      const SizedBox(height: 6),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(999),
+                        child: LinearProgressIndicator(
+                          minHeight: isMobile ? 9 : 10,
+                          value: progress * animationValue,
+                          color: color,
+                          backgroundColor: color.withValues(alpha: 0.12),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+              if (index != items.length - 1) SizedBox(height: itemGap),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
@@ -786,9 +810,7 @@ class _HorizontalBarChart extends StatelessWidget {
 class _DonutChart extends StatelessWidget {
   final List<DashboardChartItem> items;
 
-  const _DonutChart({
-    required this.items,
-  });
+  const _DonutChart({required this.items});
 
   @override
   Widget build(BuildContext context) {
@@ -805,71 +827,81 @@ class _DonutChart extends StatelessWidget {
         final sectionRadius = chartSize * 0.28;
         final centerSpaceRadius = chartSize * 0.22;
 
-        return Row(
-          children: [
-            SizedBox.square(
-              dimension: chartSize,
-              child: PieChart(
-                PieChartData(
-                  centerSpaceRadius: centerSpaceRadius,
-                  sectionsSpace: 2,
-                  sections: [
-                    for (var index = 0; index < items.length; index++)
-                      PieChartSectionData(
-                        value: items[index].value,
-                        color:
-                            _DashboardPageState._chartColors[index %
-                                _DashboardPageState._chartColors.length],
-                        radius: sectionRadius,
-                        title: total == 0
-                            ? ''
-                            : '${(items[index].value / total * 100).round()}%',
-                        titleStyle: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w800,
-                          fontSize: isMobile ? 10 : 12,
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(width: isMobile ? 8 : 12),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  for (var index = 0; index < items.length; index++) ...[
-                    Row(
-                      children: [
-                        Container(
-                          width: 10,
-                          height: 10,
-                          decoration: BoxDecoration(
+        return TweenAnimationBuilder<double>(
+          tween: Tween(begin: 0, end: 1),
+          duration: _dashboardChartAnimationDuration,
+          curve: _dashboardChartAnimationCurve,
+          builder: (context, animationValue, _) {
+            return Row(
+              children: [
+                SizedBox.square(
+                  dimension: chartSize,
+                  child: PieChart(
+                    PieChartData(
+                      centerSpaceRadius: centerSpaceRadius,
+                      sectionsSpace: 2,
+                      sections: [
+                        for (var index = 0; index < items.length; index++)
+                          PieChartSectionData(
+                            value: items[index].value,
                             color:
                                 _DashboardPageState._chartColors[index %
                                     _DashboardPageState._chartColors.length],
-                            shape: BoxShape.circle,
+                            radius: sectionRadius * animationValue,
+                            title: total == 0 || animationValue < 0.85
+                                ? ''
+                                : '${(items[index].value / total * 100).round()}%',
+                            titleStyle: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w800,
+                              fontSize: isMobile ? 10 : 12,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            '${items[index].label} (${items[index].value.toInt()})',
-                            maxLines: 1,
-                            overflow: responsiveTextOverflow(context),
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ),
                       ],
                     ),
-                    const SizedBox(height: 10),
-                  ],
-                ],
-              ),
-            ),
-          ],
+                    duration: Duration.zero,
+                  ),
+                ),
+                SizedBox(width: isMobile ? 8 : 12),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (var index = 0; index < items.length; index++) ...[
+                        Row(
+                          children: [
+                            Container(
+                              width: 10,
+                              height: 10,
+                              decoration: BoxDecoration(
+                                color:
+                                    _DashboardPageState._chartColors[index %
+                                        _DashboardPageState
+                                            ._chartColors
+                                            .length],
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                '${items[index].label} (${items[index].value.toInt()})',
+                                maxLines: 1,
+                                overflow: responsiveTextOverflow(context),
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
         );
       },
     );
@@ -879,9 +911,7 @@ class _DonutChart extends StatelessWidget {
 class _EmptyChart extends StatelessWidget {
   final String message;
 
-  const _EmptyChart({
-    required this.message,
-  });
+  const _EmptyChart({required this.message});
 
   @override
   Widget build(BuildContext context) {
