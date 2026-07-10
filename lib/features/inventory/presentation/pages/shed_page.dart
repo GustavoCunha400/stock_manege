@@ -14,7 +14,7 @@ import '../dialogs/shed_actions_dialog.dart';
 import '../dialogs/show_movimentation_dialog.dart';
 import '../controllers/product_controller.dart';
 import '../controllers/shed_controller.dart';
-import '../widgets/product_image_preview.dart';
+import '../../domain/usecases/product_image_preview.dart';
 
 class ShedPage extends StatefulWidget {
   final String? initialFilter;

@@ -114,7 +114,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                   constraints: BoxConstraints(minHeight: constraints.maxHeight),
                   child: Center(
                     child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: isMobile ? 14 : 24),
+                      padding: EdgeInsets.symmetric(
+                          vertical: isMobile ? 14 : 24,
+                      ),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
