@@ -1,42 +1,30 @@
 import 'package:estokar_gestaodeestoque/features/inventory/domain/entities/shed_stock.dart';
-import 'package:flutter/cupertino.dart';
 
 import '../../domain/usecases/add_shed.dart';
 import '../../domain/usecases/edit_shed.dart';
 import '../../domain/usecases/get_shed.dart';
 import '../../domain/usecases/remove_shed.dart';
-import '../../domain/usecases/update_shed.dart';
+import 'collection_controller.dart';
 
-class ShedController extends ChangeNotifier {
+class ShedController extends CollectionController<ShedStock> {
   final GetShed getShed;
   final AddShed addShed;
   final RemoveShed removeShed;
-  final UpdateShed updateShed;
   final EditShed editShedUseCase;
 
   ShedController({
     required this.getShed,
     required this.addShed,
     required this.removeShed,
-    required this.updateShed,
     required this.editShedUseCase,
-    required this.sheds,
-    required this.isLoading,
   });
 
-  List<ShedStock> sheds = [];
+  List<ShedStock> get sheds => items;
 
-  bool isLoading = false;
+  @override
+  Future<List<ShedStock>> fetchItems() => getShed();
 
-  Future<void> loadSheds() async {
-    isLoading = true;
-    notifyListeners();
-
-    sheds = await getShed();
-
-    isLoading = false;
-    notifyListeners();
-  }
+  Future<void> loadSheds() => loadItems();
 
   Future<bool> createShed({
     required String nome,
@@ -85,4 +73,3 @@ class ShedController extends ChangeNotifier {
     return true;
   }
 }
-

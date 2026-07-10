@@ -15,9 +15,7 @@ import '../../features/inventory/domain/usecases/get_shed.dart';
 import '../../features/inventory/domain/usecases/remove_category.dart';
 import '../../features/inventory/domain/usecases/remove_product.dart';
 import '../../features/inventory/domain/usecases/remove_shed.dart';
-import '../../features/inventory/domain/usecases/update_category.dart';
-import '../../features/inventory/domain/usecases/update_product.dart';
-import '../../features/inventory/domain/usecases/update_shed.dart';
+import '../../features/inventory/domain/usecases/register_stock_movement.dart';
 import '../../features/inventory/presentation/controllers/category_controller.dart';
 import '../../features/inventory/presentation/controllers/new_product_form_controller.dart';
 import '../../features/inventory/presentation/controllers/product_controller.dart';
@@ -38,11 +36,8 @@ List<SingleChildWidget> controllerProviders = [
       addProduct: context.read<AddProduct>(),
       createProductUseCase: context.read<CreateProduct>(),
       removeProduct: context.read<RemoveProduct>(),
-      updateProduct: context.read<UpdateProduct>(),
       editProductUseCase: context.read<EditProduct>(),
-      products: [],
-      isLoading: false,
-      movements: [],
+      registerStockMovementUseCase: context.read<RegisterStockMovement>(),
     ),
   ),
   ChangeNotifierProvider(
@@ -50,10 +45,7 @@ List<SingleChildWidget> controllerProviders = [
       getCategory: context.read<GetCategory>(),
       addCategory: context.read<AddCategory>(),
       removeCategory: context.read<RemoveCategory>(),
-      updateCategory: context.read<UpdateCategory>(),
       editCategoryUseCase: context.read<EditCategory>(),
-      categories: [],
-      isLoading: false,
     ),
   ),
   ChangeNotifierProvider(
@@ -61,11 +53,7 @@ List<SingleChildWidget> controllerProviders = [
       getShed: context.read<GetShed>(),
       addShed: context.read<AddShed>(),
       removeShed: context.read<RemoveShed>(),
-      updateShed: context.read<UpdateShed>(),
       editShedUseCase: context.read<EditShed>(),
-      sheds: [],
-      isLoading: false,
     ),
   ),
 ];
-

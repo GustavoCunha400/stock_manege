@@ -13,7 +13,7 @@ import '../../presentation/dialogs/create_category_dialog.dart';
 import '../../presentation/dialogs/edit_category_dialog.dart';
 import '../controllers/category_controller.dart';
 import '../controllers/product_controller.dart';
-import '../../domain/usecases/card_action_buttons.dart';
+import '../widgets/card_action_buttons.dart';
 
 class CategoriesPage extends StatefulWidget {
   const CategoriesPage({super.key});

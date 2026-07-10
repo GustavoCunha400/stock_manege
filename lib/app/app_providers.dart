@@ -5,6 +5,7 @@ import 'package:estokar_gestaodeestoque/features/inventory/presentation/controll
 import '../core/auth/auth_login_controller.dart';
 import 'app_router.dart';
 import 'di/controller_providers.dart';
+import 'di/dialog_providers.dart';
 import 'di/repository_providers.dart';
 import 'di/usecase_providers.dart';
 
@@ -21,6 +22,7 @@ class AppProviders extends StatelessWidget {
         ...repositoryProviders,
         ChangeNotifierProvider(create: (_) => AuthLoginController()),
         ...usecaseProviders,
+        ...dialogProviders,
         ChangeNotifierProvider(
           create: (_) => LowStockSettingsController()..loadLowStockLimit(),
         ),

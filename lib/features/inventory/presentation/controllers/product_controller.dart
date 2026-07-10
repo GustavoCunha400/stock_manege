@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 import '../../domain/entities/category.dart';
 import '../../domain/entities/product.dart';
 import '../../domain/entities/stock_movement.dart';
@@ -9,42 +7,33 @@ import '../../domain/usecases/create_product.dart';
 import '../../domain/usecases/edit_product.dart';
 import '../../domain/usecases/get_product.dart';
 import '../../domain/usecases/remove_product.dart';
-import '../../domain/usecases/update_product.dart';
+import '../../domain/usecases/register_stock_movement.dart';
+import 'collection_controller.dart';
 
-class ProductController extends ChangeNotifier {
+class ProductController extends CollectionController<Product> {
   final GetProduct getProducts;
   final AddProduct addProduct;
   final CreateProduct createProductUseCase;
   final RemoveProduct removeProduct;
-  final UpdateProduct updateProduct;
   final EditProduct editProductUseCase;
+  final RegisterStockMovement registerStockMovementUseCase;
 
   ProductController({
     required this.getProducts,
     required this.addProduct,
     required this.createProductUseCase,
     required this.removeProduct,
-    required this.updateProduct,
     required this.editProductUseCase,
-    required this.products,
-    required this.movements,
-    required this.isLoading,
+    required this.registerStockMovementUseCase,
   });
 
-  List<Product> products = [];
+  List<Product> get products => items;
   List<StockMovement> movements = [];
 
-  bool isLoading = false;
+  @override
+  Future<List<Product>> fetchItems() => getProducts();
 
-  Future<void> loadProducts() async {
-    isLoading = true;
-    notifyListeners();
-
-    products = await getProducts();
-
-    isLoading = false;
-    notifyListeners();
-  }
+  Future<void> loadProducts() => loadItems();
 
   Future<void> createProduct({
     required String sku,
@@ -192,42 +181,21 @@ class ProductController extends ChangeNotifier {
     required int exitQuantity,
     required DateTime createdAt,
   }) async {
-    final product = products
-        .where((product) => product.id == productId)
-        .firstOrNull;
-
-    if (product == null) {
-      return false;
-    }
-
-    final resultingStock =
-        stockForProductInShedUntil(productId, shedId, createdAt) +
-        entryQuantity -
-        exitQuantity;
-
-    final movement = StockMovement(
-      productId: product.id,
-      productName: product.nome,
+    final movement = registerStockMovementUseCase(
+      products: products,
+      movements: movements,
+      productId: productId,
       observation: observation,
       shedId: shedId,
       shedName: shedName,
-      unitPrice: product.price,
       entryQuantity: entryQuantity,
       exitQuantity: exitQuantity,
-      resultingStock: resultingStock,
       createdAt: createdAt,
     );
 
-    final validation = StockBalanceCalculator.validateStockMovement(
-      movements: movements,
-      candidate: movement,
-    );
-    if (!validation.isValid) return false;
+    if (movement == null) return false;
 
-    movements = [
-      movement,
-      ...movements,
-    ];
+    movements = [movement, ...movements];
     notifyListeners();
 
     return true;
@@ -264,4 +232,3 @@ class ProductController extends ChangeNotifier {
     await loadProducts();
   }
 }
-

@@ -1,42 +1,29 @@
-import 'package:fluent_ui/fluent_ui.dart';
-
 import '../../domain/entities/category.dart';
 import '../../domain/usecases/add_category.dart';
 import '../../domain/usecases/edit_category.dart';
 import '../../domain/usecases/get_category.dart';
 import '../../domain/usecases/remove_category.dart';
-import '../../domain/usecases/update_category.dart';
+import 'collection_controller.dart';
 
-class CategoryController extends ChangeNotifier {
+class CategoryController extends CollectionController<Category> {
   final GetCategory getCategory;
   final AddCategory addCategory;
   final RemoveCategory removeCategory;
-  final UpdateCategory updateCategory;
   final EditCategory editCategoryUseCase;
 
   CategoryController({
     required this.getCategory,
     required this.addCategory,
     required this.removeCategory,
-    required this.updateCategory,
     required this.editCategoryUseCase,
-    required this.categories,
-    required this.isLoading,
   });
 
-  List<Category> categories = [];
+  List<Category> get categories => items;
 
-  bool isLoading = false;
+  @override
+  Future<List<Category>> fetchItems() => getCategory();
 
-  Future<void> loadCategory() async {
-    isLoading = true;
-    notifyListeners();
-
-    categories = await getCategory();
-
-    isLoading = false;
-    notifyListeners();
-  }
+  Future<void> loadCategory() => loadItems();
 
   Future<void> createCategory({
     required String nome,
@@ -82,4 +69,3 @@ class CategoryController extends ChangeNotifier {
     await loadCategory();
   }
 }
-
